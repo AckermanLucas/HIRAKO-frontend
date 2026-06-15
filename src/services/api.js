@@ -1,5 +1,4 @@
-// Utilise la variable d'environnement selon l'environnement
-const BACKEND = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+const BACKEND = process.env.REACT_APP_API_URL || 'https://hirako-backend-production.up.railway.app';
 const API = `${BACKEND}/api`;
 
 // ============================================================
@@ -39,7 +38,9 @@ export const transformArtist = (a) => {
            `https://picsum.photos/seed/artist${a.id}/300/300`,
     followers: fans >= 1000000
       ? `${(fans / 1000000).toFixed(1)}M`
-      : fans >= 1000 ? `${(fans / 1000).toFixed(0)}K` : `${fans}`,
+      : fans >= 1000
+        ? `${(fans / 1000).toFixed(0)}K`
+        : `${fans}`,
     genre: 'Music',
     verified: fans > 100000,
     bio: `Découvrez ${a.name} sur Hirako.`,
@@ -116,7 +117,7 @@ export const searchAll = async (query) => {
 };
 
 // ============================================================
-// HOME
+// HOME DATA
 // ============================================================
 export const getCharts = async () => {
   try {
@@ -135,8 +136,11 @@ export const getCharts = async () => {
 export const getGenres = async () => {
   try {
     const data = await apiFetch(`${API}/deezer/genres`);
-    const colors = ['#ec4899','#f59e0b','#7c3aed','#ef4444','#10b981',
-                    '#3b82f6','#8b5cf6','#06b6d4','#6b7280','#f97316','#14b8a6','#a855f7'];
+    const colors = [
+      '#ec4899','#f59e0b','#7c3aed','#ef4444','#10b981',
+      '#3b82f6','#8b5cf6','#06b6d4','#6b7280','#f97316',
+      '#14b8a6','#a855f7',
+    ];
     const emojis = ['🎤','🎧','🎛️','🎵','🎸','🎺','🎻','☕','🤘','💫','🌊','✨'];
     return (data.data || [])
       .filter(g => g.id !== 0)
@@ -169,7 +173,9 @@ export const getHomeData = async () => {
     getNewReleases(),
   ]);
   return {
-    charts: charts.status === 'fulfilled' ? charts.value : { tracks: [], artists: [], albums: [] },
+    charts: charts.status === 'fulfilled'
+      ? charts.value
+      : { tracks: [], artists: [], albums: [] },
     genres: genres.status === 'fulfilled' ? genres.value : [],
     releases: releases.status === 'fulfilled' ? releases.value : [],
   };
@@ -203,16 +209,18 @@ export const getAlbumFull = async (albumId) => {
   try {
     const data = await apiFetch(`${API}/deezer/album/${albumId}`);
     const album = transformAlbum(data);
-    album.tracks = (data.tracks?.data || []).map(t => transformTrack({
-      ...t,
-      album: {
-        title: data.title,
-        cover_xl: data.cover_xl,
-        cover_big: data.cover_big,
-        cover_medium: data.cover_medium,
-        release_date: data.release_date,
-      },
-    })).filter(t => t?.audioUrl);
+    album.tracks = (data.tracks?.data || [])
+      .map(t => transformTrack({
+        ...t,
+        album: {
+          title: data.title,
+          cover_xl: data.cover_xl,
+          cover_big: data.cover_big,
+          cover_medium: data.cover_medium,
+          release_date: data.release_date,
+        },
+      }))
+      .filter(t => t?.audioUrl);
     return album;
   } catch (err) {
     console.error('Album error:', err);
@@ -231,5 +239,17 @@ export const getLyrics = async (artist, title) => {
     return data.lyrics || null;
   } catch {
     return null;
+  }
+};
+
+// ============================================================
+// GENRE ARTISTS
+// ============================================================
+export const getGenreArtists = async (genreId) => {
+  try {
+    const data = await apiFetch(`${API}/deezer/genre/${genreId}/artists`);
+    return (data.data || []).map(transformArtist).filter(Boolean);
+  } catch {
+    return [];
   }
 };
