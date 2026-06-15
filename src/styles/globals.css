@@ -1,0 +1,227 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #111118;
+  --bg-card: #1a1a2e;
+  --bg-hover: #16213e;
+  --accent-primary: #7c3aed;
+  --accent-secondary: #a855f7;
+  --accent-pink: #ec4899;
+  --accent-blue: #3b82f6;
+  --accent-green: #10b981;
+  --text-primary: #ffffff;
+  --text-secondary: #a1a1aa;
+  --text-muted: #52525b;
+  --border-color: #27272a;
+  --gradient-1: linear-gradient(135deg, #7c3aed, #ec4899);
+  --sidebar-width: 280px;
+  --player-height: 90px;
+  --font-main: 'Nunito Sans', 'Quicksand', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Quicksand', 'Nunito Sans', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  overflow: hidden;
+  height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: 0.01em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+}
+
+#root {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes equalizer {
+  0%, 100% { height: 4px; }
+  50% { height: 20px; }
+}
+@keyframes shimmer {
+  0% { background-position: -468px 0; }
+  100% { background-position: 468px 0; }
+}
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(124, 58, 237, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(124, 58, 237, 0.8); }
+}
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 40px rgba(124,58,237, 0.3); }
+  50% { box-shadow: 0 0 80px rgba(124,58,237, 0.6); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.animate-fadeIn { animation: fadeIn 0.4s ease forwards; }
+
+.eq-bar {
+  width: 3px;
+  background: var(--accent-secondary);
+  border-radius: 2px;
+  animation: equalizer 0.8s ease-in-out infinite;
+}
+.eq-bar:nth-child(2) { animation-delay: 0.2s; }
+.eq-bar:nth-child(3) { animation-delay: 0.4s; }
+.eq-bar:nth-child(4) { animation-delay: 0.1s; }
+
+.track-row { transition: all 0.2s ease; }
+.track-row:hover { background: rgba(124,58,237,0.06); border-radius: 8px; }
+
+.music-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+.music-card:hover { transform: translateY(-4px); }
+.music-card:hover .card-overlay { opacity: 1 !important; }
+.music-card:hover .card-play-btn {
+  transform: translateY(0) !important;
+  opacity: 1 !important;
+}
+
+.nav-link {
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+.nav-link::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 3px; height: 0;
+  background: var(--gradient-1);
+  border-radius: 0 2px 2px 0;
+  transition: height 0.2s ease;
+}
+.nav-link.active::before { height: 70%; }
+.nav-link:hover { background: rgba(124,58,237,0.06); }
+.nav-link.active { background: rgba(124, 58, 237, 0.12); color: var(--text-primary); }
+
+.progress-bar {
+  position: relative; height: 4px;
+  background: var(--border-color);
+  border-radius: 2px; cursor: pointer;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--gradient-1);
+  border-radius: 2px;
+  position: relative;
+  transition: width 0.1s linear;
+}
+.progress-fill::after {
+  content: ''; position: absolute;
+  right: -6px; top: -4px;
+  width: 12px; height: 12px;
+  background: white; border-radius: 50%;
+  opacity: 0; transition: opacity 0.2s;
+  box-shadow: 0 0 10px rgba(124, 58, 237, 0.8);
+}
+.progress-bar:hover .progress-fill::after { opacity: 1; }
+
+.vinyl-record { border-radius: 50%; transition: all 0.3s ease; }
+.vinyl-record.playing {
+  animation: rotate 8s linear infinite;
+  box-shadow: 0 0 40px rgba(124, 58, 237, 0.5);
+}
+
+.search-input {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  outline: none;
+  transition: all 0.3s ease;
+  font-family: var(--font-main);
+}
+.search-input:focus {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+.search-input::placeholder { color: var(--text-muted); }
+
+.btn-primary {
+  background: var(--gradient-1);
+  border: none; color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: var(--font-main);
+}
+.btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.btn-primary:active { transform: scale(0.97); }
+
+input[type="range"] {
+  -webkit-appearance: none; appearance: none;
+  background: transparent; cursor: pointer;
+}
+input[type="range"]::-webkit-slider-track {
+  background: var(--border-color);
+  height: 4px; border-radius: 2px;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  background: white;
+  height: 12px; width: 12px;
+  border-radius: 50%; margin-top: -4px;
+  transition: transform 0.1s;
+}
+input[type="range"]:hover::-webkit-slider-thumb {
+  transform: scale(1.3);
+  background: var(--accent-secondary);
+}
+
+::selection { background: rgba(124, 58, 237, 0.3); color: white; }
+
+body, div, p, span, h1, h2, h3, h4, button, input, a {
+  transition: background-color 0.3s ease, color 0.15s ease, border-color 0.3s ease;
+}
+
+/* Material symbols config */
+.material-symbols-rounded {
+  font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  :root {
+    --sidebar-width: 0px;
+    --player-height: 72px;
+  }
+}
+@media (max-width: 480px) {
+  :root { --player-height: 64px; }
+}
